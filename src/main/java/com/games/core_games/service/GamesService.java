@@ -8,6 +8,10 @@ import com.games.core_games.exceptions.customExceptions.GameException;
 import com.games.core_games.repository.GameRepository;
 import com.games.core_games.repository.GamesCategoryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
@@ -25,6 +29,17 @@ public class GamesService {
         this.gamesCategoryRepository = gamesCategoryRepository;
     }
 
+    public GameResponseDTO findById(Long id){
+        GamesEntity game = this.gameRepository.findById(id).orElseThrow(() -> new GameException("Game not foud", HttpStatus.NOT_FOUND.value()));
+        return GameResponseDTO.builder()
+                .gameId(game.getGameId())
+                .gameName(game.getGameName())
+                .game_score(game.getGameRating())
+                .gameMainCategory(game.getGameMainCategory())
+                .gameSecondaryCategory(game.getGameSecondaryCategory())
+                .build();
+    }
+
     public List<GameResponseDTO> listAll(){
         List<GamesEntity> games = this.gameRepository.findAll();
         if(games.isEmpty()){
@@ -39,6 +54,23 @@ public class GamesService {
                         entity.getGameRating()))
                 .toList();
     }
+
+    public Page<GameResponseDTO> listAllPage(int page, int size) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.ASC, "gameId"));
+        Page<GamesEntity> gamesPage = this.gameRepository.findAll(pageable);
+        if (page >= gamesPage.getTotalPages() && !gamesPage.isEmpty()) {
+            return Page.empty(pageable);
+        }
+
+        return gamesPage.map(entity -> new GameResponseDTO(
+                entity.getGameId(),
+                entity.getGameName(),
+                entity.getGameImage(),
+                entity.getGameMainCategory(),
+                entity.getGameSecondaryCategory(),
+                entity.getGameRating()));
+    }
+
 
     public GameResponseDTO createGame(GameCreateRequestDTO gameCreateRequestDTO) {
         GamesEntity gameEntity = null;

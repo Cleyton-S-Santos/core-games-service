@@ -3,12 +3,14 @@ package com.games.core_games.entities.gameFeedback;
 import com.games.core_games.entities.UserEntity;
 import com.games.core_games.entities.gamesEntity.GamesEntity;
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 @Entity()
 @Table(name = "TB_GAMES_FEEDBACKS")
 @Getter() @Setter()
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
 public class GamesFeedBackEntity {
     @Id()
     @GeneratedValue(strategy = GenerationType.IDENTITY)
