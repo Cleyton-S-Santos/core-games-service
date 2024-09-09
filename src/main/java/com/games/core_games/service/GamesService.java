@@ -109,4 +109,38 @@ public class GamesService {
                 .gameId(gameEntity.getGameId())
                 .build();
     }
+
+    public Page<GameResponseDTO> findGamesByCategory(Long category, int page, int size) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.ASC, "game_id"));
+        Page<GamesEntity> gamesList = this.gameRepository.findGamesByCategory(category, pageable);
+        if (page >= gamesList.getTotalPages() && !gamesList.isEmpty()) {
+            return Page.empty(pageable);
+        }
+
+        return gamesList.map(entity -> new GameResponseDTO(
+                entity.getGameId(),
+                entity.getGameName(),
+                entity.getGameImage(),
+                entity.getGameMainCategory(),
+                entity.getGameSecondaryCategory(),
+                entity.getGameRating()));
+    }
+
+    public Page<GameResponseDTO> findGamesByName(String gameName, int page, int size) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.ASC, "game_id"));
+        Page<GamesEntity> gamesList = this.gameRepository.findGamesByName(gameName, pageable);
+        if (page >= gamesList.getTotalPages() && !gamesList.isEmpty()) {
+            return Page.empty(pageable);
+        }
+
+        return gamesList.map(entity -> new GameResponseDTO(
+                entity.getGameId(),
+                entity.getGameName(),
+                entity.getGameImage(),
+                entity.getGameMainCategory(),
+                entity.getGameSecondaryCategory(),
+                entity.getGameRating()));
+    }
+
+
 }

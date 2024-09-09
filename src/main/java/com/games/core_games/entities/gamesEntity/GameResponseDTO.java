@@ -4,9 +4,9 @@ import com.games.core_games.entities.gamesCategory.GamesCategoryEntity;
 import lombok.*;
 
 @Getter @Setter
-@AllArgsConstructor
+@Builder()
+@AllArgsConstructor()
 @NoArgsConstructor
-@Builder
 public class GameResponseDTO {
     private Long gameId;
     private String gameName;
