@@ -38,4 +38,24 @@ public class GameController {
     ResponseEntity<GameResponseDTO> findById(@PathVariable Long id){
         return ResponseEntity.ok(this.gamesService.findById(id));
     }
+
+    @GetMapping("/category/{categoryId}")
+    ResponseEntity<Page<GameResponseDTO>> findAllByCategory(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "15") int size,
+            @PathVariable("categoryId") Long categoryId
+    ){
+        Page<GameResponseDTO> gamePage = this.gamesService.findGamesByCategory(categoryId, page, size);
+        return ResponseEntity.ok(gamePage);
+    }
+
+    @GetMapping("search/{gameName}")
+    ResponseEntity<Page<GameResponseDTO>> findGameByName(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "15") int size,
+            @PathVariable("gameName") String gameName
+    ){
+        Page<GameResponseDTO> gamePage = this.gamesService.findGamesByName(gameName, page, size);
+        return ResponseEntity.ok(gamePage);
+    }
 }
